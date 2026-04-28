@@ -260,7 +260,7 @@ g('exBtn').onclick = async function() {
 {"brand":"brand name only","model":"FULL MODEL NAME UPPERCASE","year":"year","km":"odometer with KM e.g. 16500 KM","price":"price with rupee symbol ₹","location":"city short e.g. Delhi DL","b1":"ownership info max 8 words","b2":"insurance or docs max 8 words","b3":"key feature or spec max 8 words","b4":"price note or extra detail max 8 words"}
 Use only info visible. Empty string if missing.`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ inline_data: { mime_type: ssMime, data: ss64 } }, { text: prompt }] }], generationConfig: { temperature: 0.1, maxOutputTokens: 600 } })
