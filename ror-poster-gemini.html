@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>RIDE ON ROAD — AI Poster Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#161616;font-family:'Barlow',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 60px;gap:16px;}
+.ror-header{text-align:center;padding:8px 0;}
+.ror-brand{display:flex;align-items:center;justify-content:center;gap:2px;font-size:12px;letter-spacing:0.28em;color:rgba(255,255,255,0.5);font-weight:700;text-transform:uppercase;}
+.rdot{width:7px;height:7px;background:#E8192C;border-radius:50%;display:inline-block;margin:0 1px;}
+.ror-sub{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;}
+.card{width:100%;max-width:440px;background:#222;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:11px;}
+.ctitle{font-size:9px;letter-spacing:0.25em;color:rgba(255,255,255,0.28);text-transform:uppercase;font-weight:700;}
+.key-card{border:1px solid rgba(232,25,44,0.2);}
+.key-note{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.6;}
+.key-note a{color:#E8192C;text-decoration:none;}
+.key-row{display:flex;gap:8px;align-items:center;}
+.key-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;color:#fff;font-size:13px;font-family:'Barlow',sans-serif;outline:none;}
+.key-input:focus{border-color:rgba(232,25,44,0.4);}
+.key-save{padding:10px 16px;background:#E8192C;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap;}
+.key-st{font-size:10px;letter-spacing:0.08em;min-height:14px;}
+.key-st.saved{color:#4CAF50;}.key-st.missing{color:rgba(255,255,255,0.25);}
+.upload-zone{border:1.5px dashed rgba(255,255,255,0.15);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.upload-zone.active{border-color:rgba(232,25,44,0.5);}
+.uz-icon{font-size:22px;margin-bottom:5px;}
+.uz-text{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5;}
+.uz-sub{font-size:10px;color:rgba(255,255,255,0.2);margin-top:2px;}
+.uz-preview img{max-height:100px;border-radius:6px;object-fit:contain;}
+.uz-note{font-size:11px;color:rgba(255,255,255,0.3);margin-top:6px;}
+.ai-btn{width:100%;padding:13px;background:#E8192C;border:none;border-radius:9px;color:#fff;font-size:14px;font-weight:700;letter-spacing:0.06em;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;}
+.ai-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.status{font-size:11px;color:rgba(255,255,255,0.35);text-align:center;min-height:15px;letter-spacing:0.05em;}
+.status.ok{color:#4CAF50;}.status.err{color:#E8192C;}
+.hr{height:1px;background:rgba(255,255,255,0.07);}
+.fg{display:flex;flex-direction:column;gap:9px;}
+.frow{display:flex;gap:8px;}
+.f{display:flex;flex-direction:column;gap:4px;flex:1;}
+.f label{font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.28);font-weight:600;}
+.f input,.f select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 11px;color:#fff;font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:100%;}
+.f input:focus{border-color:rgba(232,25,44,0.4);}
+.pbtn{width:100%;padding:11px;background:rgba(232,25,44,0.07);border:1.5px dashed rgba(232,25,44,0.3);border-radius:9px;color:#E8192C;font-size:13px;font-weight:600;cursor:pointer;text-align:center;font-family:'Barlow',sans-serif;}
+.slides-hdr{width:100%;max-width:440px;display:flex;align-items:center;justify-content:space-between;}
+.slides-lbl{font-size:9px;letter-spacing:0.22em;color:rgba(255,255,255,0.2);text-transform:uppercase;}
+.scounter{font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;}
+.slides-cont{width:100%;max-width:440px;display:flex;flex-direction:column;gap:20px;align-items:center;}
+.slide-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:7px;}
+.slide-num{font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.18);text-transform:uppercase;align-self:flex-start;}
+.poster{width:100%;max-width:440px;background:#F0EDE8;display:flex;flex-direction:column;font-family:'Barlow',sans-serif;}
+.p-pw{padding:14px 14px 0 14px;}
+.p-pb{width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#ddd;position:relative;}
+.p-pb img{width:100%;height:100%;object-fit:cover;display:block;}
+.p-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0.15em;color:#aaa;text-transform:uppercase;background:#e0dedd;}
+.p-badge{position:absolute;top:12px;left:12px;background:#111;color:#fff;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-radius:6px;font-family:'Barlow',sans-serif;}
+.p-info{padding:14px 18px 0 18px;}
+.p-brand{font-size:11px;letter-spacing:0.35em;color:#666;font-weight:400;text-transform:uppercase;margin-bottom:3px;}
+.p-mr{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.p-model{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(24px,7vw,38px);line-height:0.92;color:#111;text-transform:uppercase;letter-spacing:-0.01em;flex:1;}
+.p-price{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(18px,4.8vw,26px);color:#111;white-space:nowrap;letter-spacing:-0.02em;padding-bottom:3px;}
+.p-div{height:1.5px;background:#1a1a1a;margin:0 18px 10px 18px;}
+.p-specs{display:flex;align-items:center;padding:0 18px;margin-bottom:12px;}
+.p-spec{flex:1;display:flex;align-items:center;gap:6px;}
+.p-spec:nth-child(2){justify-content:center;}
+.p-spec:nth-child(3){justify-content:flex-end;}
+.sico{width:24px;height:24px;flex-shrink:0;opacity:0.7;}
+.stc{display:flex;flex-direction:column;}
+.sv{font-family:'Barlow',sans-serif;font-weight:800;font-size:clamp(10px,2.5vw,13px);color:#111;text-transform:uppercase;letter-spacing:0.02em;line-height:1;}
+.sl{font-size:clamp(7px,1.5vw,9px);color:#888;letter-spacing:0.15em;text-transform:uppercase;font-weight:400;margin-top:2px;}
+.p-sdiv{width:1px;height:26px;background:#ccc;margin:0 7px;flex-shrink:0;}
+.p-buls{padding:0 18px;display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
+.p-bul{display:flex;align-items:flex-start;gap:8px;font-size:clamp(9px,2.1vw,11px);color:#333;line-height:1.35;font-family:'Barlow',sans-serif;}
+.bico{width:14px;height:14px;flex-shrink:0;margin-top:1px;opacity:0.55;}
+.p-foot{display:flex;align-items:center;padding:8px 18px 13px 18px;}
+.p-fl{flex:1;height:1px;background:#bbb;}
+.p-fb{padding:0 10px;font-family:'Barlow',sans-serif;font-size:clamp(7px,1.8vw,9px);letter-spacing:0.24em;color:#555;font-weight:600;text-transform:uppercase;display:flex;align-items:center;gap:1px;white-space:nowrap;}
+.rd{display:inline-block;width:6px;height:6px;background:#E8192C;border-radius:50%;margin:0 1px;flex-shrink:0;}
+.photo-slide{width:100%;max-width:440px;background:#F0EDE8;position:relative;}
+.ps-iw{width:100%;aspect-ratio:4/5;overflow:hidden;position:relative;background:#e0dedd;}
+.ps-iw img{width:100%;height:100%;object-fit:cover;display:block;}
+.ps-grad{position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to top,rgba(240,237,232,0.98),transparent);pointer-events:none;}
+.ps-ov{position:absolute;bottom:0;left:0;right:0;padding:0 15px 13px 15px;display:flex;align-items:flex-end;justify-content:space-between;}
+.ps-model{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(12px,3.2vw,17px);color:#111;text-transform:uppercase;opacity:0.6;}
+.ps-ror{font-family:'Barlow',sans-serif;font-size:clamp(7px,1.6vw,9px);letter-spacing:0.22em;color:#555;font-weight:600;text-transform:uppercase;display:flex;align-items:center;gap:1px;white-space:nowrap;opacity:0.75;}
+.add-btn{width:100%;max-width:440px;padding:13px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.28);font-size:13px;font-weight:600;cursor:pointer;text-align:center;font-family:'Barlow',sans-serif;letter-spacing:0.05em;}
+.hint{font-size:11px;color:rgba(255,255,255,0.15);text-align:center;line-height:1.6;max-width:320px;}
+</style>
+</head>
+<body>
+
+<div class="ror-header">
+  <div class="ror-brand">RIDE ON R<span class="rdot"></span>AD</div>
+  <div class="ror-sub">AI Poster Maker</div>
+</div>
+
+<div class="card key-card">
+  <div class="ctitle">Gemini API Key (one-time setup)</div>
+  <div class="key-note">
+    Get your free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a><br>
+    Tap "Get API Key" → Create → Copy → Paste below.
+  </div>
+  <div class="key-row">
+    <input class="key-input" type="password" id="apiKey" placeholder="AIza...">
+    <button class="key-save" onclick="saveKey()">Save</button>
+  </div>
+  <div class="key-st missing" id="keySt">No key saved</div>
+</div>
+
+<div class="card">
+  <div class="ctitle">Step 1 — Upload marketplace screenshot</div>
+  <label class="upload-zone" id="ssZone" for="ssIn">
+    <div id="ssPrev">
+      <div class="uz-icon">📋</div>
+      <div class="uz-text">Tap to upload Facebook / OLX listing screenshot</div>
+      <div class="uz-sub">AI reads price, specs, description automatically</div>
+    </div>
+  </label>
+  <input type="file" id="ssIn" accept="image/*" style="display:none">
+  <button class="ai-btn" id="exBtn" disabled>✦ Extract with AI</button>
+  <div class="status" id="stat">Upload a screenshot to begin</div>
+</div>
+
+<div class="card">
+  <div class="ctitle">Step 2 — Upload main bike photo (Slide 1)</div>
+  <label class="pbtn" for="mainPh">📷 &nbsp;Choose main bike photo</label>
+  <input type="file" id="mainPh" accept="image/*" style="display:none">
+</div>
+
+<div class="card">
+  <div class="ctitle">Step 3 — Review &amp; edit</div>
+  <div class="fg">
+    <div class="frow">
+      <div class="f"><label>Brand</label><input id="brand" placeholder="e.g. DUCATI"></div>
+      <div class="f"><label>Badge</label>
+        <select id="badge">
+          <option value="FOR SALE">FOR SALE</option>
+          <option value="FEATURED">FEATURED</option>
+          <option value="NEW">NEW</option>
+          <option value="PRICE DROP">PRICE DROP</option>
+          <option value="">None</option>
+        </select>
+      </div>
+    </div>
+    <div class="f"><label>Model Name</label><input id="model" placeholder="e.g. Diavel Carbon Edition"></div>
+    <div class="f"><label>Price</label><input id="price" placeholder="e.g. ₹7,75,000"></div>
+    <div class="frow">
+      <div class="f"><label>Year</label><input id="year" placeholder="2017"></div>
+      <div class="f"><label>KM</label><input id="km" placeholder="15,000 KM"></div>
+      <div class="f"><label>Location</label><input id="loc" placeholder="Delhi, DL"></div>
+    </div>
+  </div>
+  <div class="hr"></div>
+  <div class="fg">
+    <div class="ctitle">Bullet points</div>
+    <div class="f"><label>Point 1</label><input id="b1"></div>
+    <div class="f"><label>Point 2</label><input id="b2"></div>
+    <div class="f"><label>Point 3</label><input id="b3"></div>
+    <div class="f"><label>Point 4</label><input id="b4"></div>
+  </div>
+</div>
+
+<div class="slides-hdr">
+  <div class="slides-lbl">↓ Screenshot each slide</div>
+  <div class="scounter" id="sctr">1 slide</div>
+</div>
+
+<div class="slides-cont">
+  <div class="slide-wrap">
+    <div class="slide-num">Slide 1 — Listing card</div>
+    <div class="poster">
+      <div class="p-pw">
+        <div class="p-pb">
+          <div class="p-ph" id="ph">Add main photo above</div>
+          <img id="bimg" src="" alt="" style="display:none">
+          <div class="p-badge" id="badgeEl">FOR SALE</div>
+        </div>
+      </div>
+      <div class="p-info">
+        <div class="p-brand" id="brandEl">BRAND</div>
+        <div class="p-mr">
+          <div class="p-model" id="modelEl">MODEL NAME</div>
+          <div class="p-price" id="priceEl">₹—</div>
+        </div>
+      </div>
+      <div class="p-div"></div>
+      <div class="p-specs">
+        <div class="p-spec">
+          <svg class="sico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div class="stc"><div class="sv" id="yearEl">—</div><div class="sl">YEAR</div></div>
+        </div>
+        <div class="p-sdiv"></div>
+        <div class="p-spec">
+          <svg class="sico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12z"/><path d="M12 12l2.5-4"/><circle cx="12" cy="12" r="1.2" fill="#333" stroke="none"/></svg>
+          <div class="stc"><div class="sv" id="kmEl">—</div><div class="sl">KILOMETRES</div></div>
+        </div>
+        <div class="p-sdiv"></div>
+        <div class="p-spec" style="justify-content:flex-end">
+          <svg class="sico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <div class="stc"><div class="sv" id="locEl" style="font-size:clamp(8px,2vw,11px)">—</div><div class="sl">LOCATION</div></div>
+        </div>
+      </div>
+      <div class="p-buls">
+        <div class="p-bul"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span id="b1El">—</span></div>
+        <div class="p-bul"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/></svg><span id="b2El">—</span></div>
+        <div class="p-bul"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><span id="b3El">—</span></div>
+        <div class="p-bul"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1" fill="#333" stroke="none"/></svg><span id="b4El">—</span></div>
+      </div>
+      <div class="p-foot">
+        <div class="p-fl"></div>
+        <div class="p-fb">RIDE ON R<span class="rd"></span>AD</div>
+        <div class="p-fl"></div>
+      </div>
+    </div>
+  </div>
+  <div id="extraSlides"></div>
+</div>
+
+<label class="add-btn" for="extraPh">＋ &nbsp;Add more photos (each = new slide)</label>
+<input type="file" id="extraPh" accept="image/*" multiple style="display:none">
+<div class="hint">📸 Screenshot each slide → upload all as Instagram carousel</div>
+
+<script>
+const g = id => document.getElementById(id);
+let ss64 = null, ssMime = 'image/jpeg', extraCount = 0, curModel = '';
+
+window.onload = () => {
+  const k = localStorage.getItem('ror_gemini_key');
+  if (k) { g('apiKey').value = k; g('keySt').textContent = 'Key saved ✓'; g('keySt').className = 'key-st saved'; }
+};
+
+function saveKey() {
+  const k = g('apiKey').value.trim();
+  if (!k) return;
+  localStorage.setItem('ror_gemini_key', k);
+  g('keySt').textContent = 'Key saved ✓'; g('keySt').className = 'key-st saved';
+}
+
+g('ssIn').onchange = function() {
+  if (!this.files || !this.files[0]) return;
+  ssMime = this.files[0].type || 'image/jpeg';
+  const r = new FileReader();
+  r.onload = e => {
+    ss64 = e.target.result.split(',')[1];
+    g('ssZone').classList.add('active');
+    g('ssPrev').innerHTML = `<div><img src="${e.target.result}" style="max-height:100px;border-radius:6px;object-fit:contain;"><div class="uz-note">Screenshot loaded ✓</div></div>`;
+    g('exBtn').disabled = false;
+    setS('Screenshot ready. Tap Extract with AI.', '');
+  };
+  r.readAsDataURL(this.files[0]);
+};
+
+g('exBtn').onclick = async function() {
+  const key = localStorage.getItem('ror_gemini_key') || g('apiKey').value.trim();
+  if (!key) { setS('Please save your Gemini API key first.', 'err'); return; }
+  if (!ss64) return;
+  this.disabled = true; this.textContent = '⏳ Reading listing...';
+  setS('AI is reading the screenshot...', '');
+  const prompt = `Read this motorcycle listing screenshot. Return ONLY valid JSON, no markdown, no extra text:
+{"brand":"brand name only","model":"FULL MODEL NAME UPPERCASE","year":"year","km":"odometer with KM e.g. 16500 KM","price":"price with rupee symbol ₹","location":"city short e.g. Delhi DL","b1":"ownership info max 8 words","b2":"insurance or docs max 8 words","b3":"key feature or spec max 8 words","b4":"price note or extra detail max 8 words"}
+Use only info visible. Empty string if missing.`;
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ inline_data: { mime_type: ssMime, data: ss64 } }, { text: prompt }] }], generationConfig: { temperature: 0.1, maxOutputTokens: 600 } })
+    });
+    const d = await res.json();
+    if (d.error) throw new Error(d.error.message);
+    const raw = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const p = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    ['brand','model','price','year','km','loc','b1','b2','b3','b4'].forEach(k => { const el = g(k); if (el && p[k]) el.value = p[k]; });
+    update();
+    setS('✓ Done! Review and edit if needed.', 'ok');
+    this.textContent = '✓ Extracted — Run Again';
+  } catch(e) {
+    setS('Error: ' + (e.message || 'Could not read screenshot'), 'err');
+    this.textContent = '✦ Try Again';
+  }
+  this.disabled = false;
+};
+
+g('mainPh').onchange = function() {
+  if (!this.files || !this.files[0]) return;
+  const url = URL.createObjectURL(this.files[0]);
+  g('bimg').src = url; g('bimg').style.display = 'block'; g('ph').style.display = 'none';
+};
+
+g('extraPh').onchange = function() {
+  if (!this.files || !this.files.length) return;
+  Array.from(this.files).forEach(file => {
+    extraCount++;
+    const url = URL.createObjectURL(file), num = extraCount + 1;
+    const w = document.createElement('div'); w.className = 'slide-wrap';
+    w.innerHTML = `<div class="slide-num">Slide ${num} — Photo</div><div class="photo-slide"><div class="ps-iw"><img src="${url}" alt=""><div class="ps-grad"></div><div class="ps-ov"><div class="ps-model">${curModel||'MODEL NAME'}</div><div class="ps-ror">RIDE ON R<span class="rd"></span>AD</div></div></div></div>`;
+    g('extraSlides').appendChild(w);
+    g('sctr').textContent = (extraCount + 1) + ' slides';
+  });
+  this.value = '';
+};
+
+['brand','model','price','year','km','loc','b1','b2','b3','b4'].forEach(id => { const el = g(id); if (el) el.oninput = update; });
+g('badge').onchange = update;
+
+function update() {
+  const v = id => g(id)?.value || '';
+  curModel = v('model') || 'MODEL NAME';
+  g('brandEl').textContent = v('brand') || 'BRAND';
+  g('modelEl').textContent = curModel;
+  g('priceEl').textContent = v('price') || '₹—';
+  g('yearEl').textContent = v('year') || '—';
+  g('kmEl').textContent = v('km') || '—';
+  g('locEl').textContent = v('loc') || '—';
+  g('b1El').textContent = v('b1') || '—';
+  g('b2El').textContent = v('b2') || '—';
+  g('b3El').textContent = v('b3') || '—';
+  g('b4El').textContent = v('b4') || '—';
+  const badge = v('badge');
+  const bel = g('badgeEl'); bel.textContent = badge; bel.style.display = badge ? 'block' : 'none';
+  document.querySelectorAll('.ps-model').forEach(el => el.textContent = curModel);
+}
+
+function setS(msg, type) { const el = g('stat'); el.textContent = msg; el.className = 'status' + (type ? ' ' + type : ''); }
+</script>
+</body>
+</html>
